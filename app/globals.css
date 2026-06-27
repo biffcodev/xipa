@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* Dark mode keys off data-theme on <html> (set by ThemeProvider). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ─────────────────────────── Design tokens ─────────────────────────── */
+:root {
+  --onimg: #fff;
+  --fg: #1a1a18;
+  --muted: #6f6e6a;
+  --surface: rgba(0, 0, 0, 0.05);
+  --line: rgba(0, 0, 0, 0.12);
+  --line2: rgba(0, 0, 0, 0.12);
+  --line3: rgba(0, 0, 0, 0.09);
+  --line4: rgba(0, 0, 0, 0.07);
+  --line5: rgba(0, 0, 0, 0.18);
+  --line6: rgba(0, 0, 0, 0.22);
+  --bg0: #ffffff;
+  --bg1: #f7f5f1;
+  --bg2: #f1eee8;
+  --bg3: #f4f1eb;
+  --bg4: #f7f3ec;
+  --bg5: #f0efeb;
+  --bg6: #e7e5df;
+  --bg7: #dedcd6;
+  --bg8: #d3d1cb;
+  --bg9: #ffffff;
+  --bgnode: #efe6d8;
+}
+
+[data-theme="dark"] {
+  --fg: #fff;
+  --muted: #a3a3a3;
+  --surface: rgba(255, 255, 255, 0.04);
+  --line: rgba(255, 255, 255, 0.1);
+  --line2: rgba(255, 255, 255, 0.12);
+  --line3: rgba(255, 255, 255, 0.08);
+  --line4: rgba(255, 255, 255, 0.06);
+  --line5: rgba(255, 255, 255, 0.18);
+  --line6: rgba(255, 255, 255, 0.22);
+  --bg0: #000000;
+  --bg1: #0d0d0c;
+  --bg2: #141210;
+  --bg3: #161412;
+  --bg4: #1a1208;
+  --bg5: #1a1a18;
+  --bg6: #3d3d3b;
+  --bg7: #2a2a28;
+  --bg8: #4a4a48;
+  --bg9: #e5e5e5;
+  --bgnode: #1d130b;
+}
+
+/* Expose tokens as Tailwind utilities (text-fg, bg-bg1, border-line2, …).
+   `inline` keeps them as var() refs so they switch with the theme. */
+@theme inline {
+  --color-brand: #ff4d0e;
+  --color-brand2: #ff8c5a;
+  --color-brand3: #ffc09f;
+  --color-onimg: var(--onimg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line2: var(--line2);
+  --color-line3: var(--line3);
+  --color-line4: var(--line4);
+  --color-line5: var(--line5);
+  --color-line6: var(--line6);
+  --color-bg0: var(--bg0);
+  --color-bg1: var(--bg1);
+  --color-bg2: var(--bg2);
+  --color-bg3: var(--bg3);
+  --color-bg4: var(--bg4);
+  --color-bg5: var(--bg5);
+  --color-bg6: var(--bg6);
+  --color-bg7: var(--bg7);
+  --color-bg8: var(--bg8);
+  --color-bg9: var(--bg9);
+  --color-bgnode: var(--bgnode);
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+/* ─────────────────────────── Base ─────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: var(--bg0);
+  color: var(--fg);
+  font-family: "Inter", system-ui, sans-serif;
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+::selection {
+  background: #ff4d0e;
+  color: #fff;
+}
+.hscroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hscroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─────────────────────────── Keyframes ─────────────────────────── */
+@keyframes bounceArrow {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(10px); opacity: 0.4; }
+}
+@keyframes nodeGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 77, 14, 0.45); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 77, 14, 0); }
+}
+@keyframes pinPulse {
+  0% { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes revealIn {
+  from { opacity: 0; transform: translateY(42px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes heroFill {
+  from { width: 0; }
+  to { width: 100%; }
+}
