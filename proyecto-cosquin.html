@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cosquín Rock — Proyectos XIPA</title>
+<meta name="description" content="Cosquín Rock — proyecto de ecodiseño y economía circular de XIPA.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="i18n.js"></script>
+<link rel="stylesheet" href="responsive.css">
+<script src="menu.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; }
+  ::selection { background: #FF4D0E; color: #fff; }
+  @keyframes bounceArrow { 0%,100%{ transform:translateY(0); opacity:.9; } 50%{ transform:translateY(10px); opacity:.4; } }
+  @keyframes revealIn { from { opacity:0; transform:translateY(42px); } to { opacity:1; transform:none; } }
+  @keyframes heroIn { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+  .pf-inner { animation: heroIn 1s cubic-bezier(.2,.7,.2,1) .15s both; }
+  /* default: fully visible (safe fallback where scroll timelines are unsupported) */
+  .reveal { opacity:1; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal { opacity:0; animation: revealIn .9s cubic-bezier(.2,.7,.2,1) both; animation-timeline: view(); animation-range: entry 2% cover 26%; }
+    }
+  }
+  .zoomimg { overflow:hidden; }
+  .zoomimg .slotimg { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .zoomimg:hover .slotimg { transform: scale(1.06); }
+  .hscroll { scrollbar-width: none; -ms-overflow-style: none; }
+  .hscroll::-webkit-scrollbar { display: none; }
+  .hscroll { cursor: grab; }
+  .hscroll:active { cursor: grabbing; }
+  #site { transition: background-color .45s ease, color .45s ease; --onimg:#fff; --fg:#1a1a18; --muted:#6f6e6a; --surface:rgba(0,0,0,0.05); --line:rgba(0,0,0,0.12); --line2:rgba(0,0,0,0.12); --line3:rgba(0,0,0,0.09); --line4:rgba(0,0,0,0.07); --line5:rgba(0,0,0,0.18); --line6:rgba(0,0,0,0.22); --bg0:#ffffff; --bg1:#f7f5f1; --bg2:#f1eee8; --bg3:#f4f1eb; --bg4:#f7f3ec; --bg5:#f0efeb; --bg6:#e7e5df; --bg7:#dedcd6; --bg8:#d3d1cb; --bg9:#ffffff; --bgnode:#efe6d8; }
+  #site[data-theme="dark"] { --fg:#fff; --muted:#A3A3A3; --surface:rgba(255,255,255,0.04); --line:rgba(255,255,255,0.1); --line2:rgba(255,255,255,0.12); --line3:rgba(255,255,255,0.08); --line4:rgba(255,255,255,0.06); --line5:rgba(255,255,255,0.18); --line6:rgba(255,255,255,0.22); --bg0:#000000; --bg1:#0d0d0c; --bg2:#141210; --bg3:#161412; --bg4:#1A1208; --bg5:#1A1A18; --bg6:#3D3D3B; --bg7:#2A2A28; --bg8:#4A4A48; --bg9:#E5E5E5; --bgnode:#1d130b; }
+</style>
+<script src="chrome.js"></script>
+<script>
+(function(){
+  function parallax(){ [].slice.call(document.querySelectorAll('.pf-bg')).forEach(function(b){ var s=b.closest('section'); if(!s)return; var p=s.getBoundingClientRect().top/window.innerHeight; b.style.transform='translateY('+(p*-6)+'%) scale(1.12)'; }); }
+  parallax(); window.addEventListener('scroll', parallax, { passive:true }); var pc=0, pv=setInterval(function(){ parallax(); if(++pc>40) clearInterval(pv); }, 120);
+})();
+</script>
+<script>
+(function(){
+  if (window.__pfDrag) return; window.__pfDrag = true;
+  function wire(){
+    document.querySelectorAll('.hscroll').forEach(function(el){
+      if (el.__wired) return; el.__wired = true;
+      var down=false, sx=0, sl=0;
+      el.addEventListener('pointerdown', function(e){ down=true; sx=e.pageX; sl=el.scrollLeft; el.setPointerCapture(e.pointerId); });
+      el.addEventListener('pointermove', function(e){ if(!down) return; el.scrollLeft = sl - (e.pageX - sx); });
+      el.addEventListener('pointerup', function(){ down=false; });
+      el.addEventListener('pointercancel', function(){ down=false; });
+    });
+  }
+  var n=0, iv=setInterval(function(){ wire(); if(++n>30) clearInterval(iv); }, 150);
+})();
+</script>
+<script src="hover.js"></script>
+</head>
+<body>
+<div id="site" style="background:var(--bg1); color:var(--fg); font-family:'Inter',sans-serif; width:100%; min-height:100vh;">
+
+  <nav id="navpill" style="position:fixed; top:12px; left:50%; transform:translateX(-50%); width:calc(100% - 80px); max-width:1600px; display:flex; align-items:center; justify-content:space-between; padding:13px 16px 13px 30px; background:rgba(40,40,38,0.30); backdrop-filter:blur(32px); -webkit-backdrop-filter:blur(32px); border:1px solid var(--line2); border-radius:100px; z-index:200;">
+    <a href="index.html" style="font-family:'Inter'; font-weight:800; font-size:20px; color:var(--onimg); letter-spacing:0.04em; text-decoration:none;">XIPA</a>
+    <div style="display:flex; align-items:center; gap:30px;">
+      <div id="navlinks" style="display:flex; align-items:center; gap:30px;">
+        <a href="index.html" style="position:relative; color:var(--onimg); opacity:.6; font-size:14px; font-weight:500; text-decoration:none;">Home</a>
+        <a href="oportunidad.html" style="position:relative; color:var(--onimg); opacity:.6; font-size:14px; font-weight:500; text-decoration:none;">Oportunidad</a>
+        <a href="metodologia.html" style="position:relative; color:var(--onimg); opacity:.6; font-size:14px; font-weight:500; text-decoration:none;">Metodología</a>
+        <a href="equipo.html" style="position:relative; color:var(--onimg); opacity:.6; font-size:14px; font-weight:500; text-decoration:none;">Equipo</a>
+        <a href="proyectos.html" style="position:relative; color:var(--onimg); opacity:1; font-size:14px; font-weight:500; text-decoration:none;"><span style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:5px; height:5px; border-radius:50%; background:#FF4D0E;"></span>Proyectos</a>
+        <a href="contacto.html" style="position:relative; color:var(--onimg); opacity:.6; font-size:14px; font-weight:500; text-decoration:none;">Contacto</a>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <button id="hburg" aria-label="Menú" style="display:none; align-items:center; justify-content:center; width:38px; height:38px; padding:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:#fff; border-radius:100px; cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg></button>
+        <div data-no-i18n id="lang-ctrl" style="position:relative;">
+          <button id="lang-btn" aria-label="Idioma" style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; padding:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:#fff; border-radius:100px; cursor:pointer;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4"/><path d="M12 2.8c2.6 2.6 4 5.8 4 9.2s-1.4 6.6-4 9.2c-2.6-2.6-4-5.8-4-9.2s1.4-6.6 4-9.2z"/></svg></button>
+          <div id="lang-menu" style="display:none; position:absolute; top:46px; right:0; min-width:148px; background:rgba(24,24,22,0.97); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.16); border-radius:14px; padding:6px; flex-direction:column; gap:2px; z-index:300; box-shadow:0 22px 50px rgba(0,0,0,0.45);">
+            <button data-lang="es" style="text-align:left; padding:9px 12px; border:none; border-radius:9px; cursor:pointer; font-family:'Inter'; font-size:14px; background:transparent; color:rgba(255,255,255,0.7);">Español</button>
+            <button data-lang="en" style="text-align:left; padding:9px 12px; border:none; border-radius:9px; cursor:pointer; font-family:'Inter'; font-size:14px; background:transparent; color:rgba(255,255,255,0.7);">English</button>
+            <button data-lang="fr" style="text-align:left; padding:9px 12px; border:none; border-radius:9px; cursor:pointer; font-family:'Inter'; font-size:14px; background:transparent; color:rgba(255,255,255,0.7);">Français</button>
+            <button data-lang="pt" style="text-align:left; padding:9px 12px; border:none; border-radius:9px; cursor:pointer; font-family:'Inter'; font-size:14px; background:transparent; color:rgba(255,255,255,0.7);">Português</button>
+          </div>
+        </div>
+        <button id="theme-toggle" aria-label="Cambiar tema" style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; padding:0; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.22); color:#fff; border-radius:100px; cursor:pointer;"><span id="theme-icon" style="display:inline-flex;"></span></button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="mobile-drawer" style="display:none; position:fixed; inset:0; z-index:190; background:rgba(20,20,18,0.97); backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+    <a href="index.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Home</a>
+    <a href="oportunidad.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Oportunidad</a>
+    <a href="metodologia.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Metodología</a>
+    <a href="equipo.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Equipo</a>
+    <a href="proyectos.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Proyectos</a>
+    <a href="contacto.html" style="color:#fff; font-size:30px; font-weight:700; letter-spacing:-0.01em; text-decoration:none; padding:10px 0;">Contacto</a>
+  </div>
+<main>
+  <section class="pf-full" style="position:relative; height:100vh; overflow:hidden; background:#0d0d0c;">
+    <div class="pf-bg" style="position:absolute; inset:-10% -2%; will-change:transform; transform:scale(1.12);"><img class="slotimg" src="images/slots/pf-cosquin.webp" alt="Cosquín Rock" loading="lazy" style="position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover;"></div>
+    <div style="position:absolute; inset:0; background:linear-gradient(110deg,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.34) 46%,rgba(0,0,0,0.04) 74%); pointer-events:none;"></div>
+    <div style="position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0) 38%); pointer-events:none;"></div>
+    <div class="pf-inner" style="position:absolute; left:64px; right:64px; bottom:15vh; max-width:920px;">
+      <a href="proyectos.html" style="display:inline-block; color:rgba(255,255,255,0.75); font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none; margin-bottom:18px;">← Proyectos</a>
+      <span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">Eventos</span>
+      <h1 style="margin:14px 0 0; color:#fff; font-weight:800; font-size:clamp(52px,9vw,128px); line-height:0.9; letter-spacing:-0.03em; text-shadow:0 4px 50px rgba(0,0,0,0.5);">Cosquín Rock</h1>
+      <p style="margin:22px 0 0; max-width:600px; color:rgba(255,255,255,0.88); font-size:clamp(17px,1.6vw,22px); font-weight:300; line-height:1.5; text-shadow:0 2px 20px rgba(0,0,0,0.5);">Decantador de vinos 100% reutilizable para recitales.</p>
+    </div>
+    <a href="#detalle" aria-label="Ver más" style="position:absolute; left:50%; bottom:40px; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:10px; color:#FF4D0E; text-decoration:none;"><span style="font-size:11px; letter-spacing:0.24em; text-transform:uppercase; font-weight:600;">Scroll</span><span style="font-size:26px; line-height:1; animation:bounceArrow 1.8s ease-in-out infinite;">↓</span></a>
+  </section>  <section id="detalle" style="max-width:1280px; margin:0 auto; padding:120px 64px 40px; display:flex; flex-wrap:wrap; gap:64px; align-items:flex-start;">
+    <div class="reveal" style="flex:1.7 1 420px;"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">El proyecto</span><p style="margin:22px 0 0; color:var(--fg); font-weight:300; font-size:clamp(28px,3.8vw,52px); line-height:1.18; letter-spacing:-0.02em;">Diseñamos un decantador de vinos reutilizable: una alternativa segura al vidrio en un contexto masivo.</p><p style="margin:28px 0 0; color:var(--muted); font-size:17px; font-weight:300; line-height:1.75; max-width:600px;">Un objeto irrompible que eleva la experiencia del consumo responsable de vino en festivales, sin los riesgos del vidrio ni los residuos del descartable.</p></div>
+    <div class="reveal" style="flex:1 1 230px; position:sticky; top:120px; border-top:2px solid #FF4D0E; padding-top:24px; display:flex; flex-direction:column; gap:20px;">
+      <div><span style="display:block; color:var(--muted); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600;">Cliente</span><span style="display:block; margin-top:5px; color:var(--fg); font-weight:600; font-size:17px;">Cosquín Rock</span></div>
+      <div><span style="display:block; color:var(--muted); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600;">Año</span><span style="display:block; margin-top:5px; color:var(--fg); font-weight:600; font-size:17px;">2023</span></div>
+      <div><span style="display:block; color:var(--muted); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600;">Rol</span><span style="display:block; margin-top:5px; color:var(--fg); font-weight:600; font-size:17px;">Producto · Evento</span></div>
+      <div><span style="display:block; color:var(--muted); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; font-weight:600;">Pilares</span><span style="display:block; margin-top:5px; color:#FF4D0E; font-weight:600; font-size:17px;">Reutilizar</span></div>
+    </div>
+  </section>  <section class="reveal" style="width:100%; padding:30px 0 10px;">
+    <div class="zoomimg" style="position:relative; width:calc(100% - 48px); max-width:1500px; margin:0 auto; aspect-ratio:16/9; border-radius:24px; box-shadow:0 40px 90px rgba(0,0,0,0.22);"><div class="slotimg slot-empty" data-slot="det-cosquin-1" style="position:absolute; inset:0; width:100%; height:100%; display:block; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--surface); border:1.5px dashed var(--line2); color:var(--muted); text-align:center; padding:12px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span style="font-size:12px; font-weight:500; letter-spacing:.01em; opacity:.8;">Cosquín Rock — destacada</span></div></div>
+  </section>  <section style="width:100%; background:var(--bg2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:50px;">
+    <div style="max-width:1160px; margin:0 auto; padding:110px 64px; display:flex; flex-wrap:wrap; gap:56px;">
+      <div class="reveal" style="flex:1 1 320px; position:relative;"><span style="position:absolute; top:-54px; left:-6px; font-weight:900; font-size:170px; line-height:1; color:var(--line); letter-spacing:-0.05em; pointer-events:none;">01</span><div style="position:relative;"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">El desafío</span><p style="margin:16px 0 0; color:var(--muted); font-size:17px; font-weight:300; line-height:1.75;">El vidrio está prohibido en recitales por seguridad, pero los descartables tradicionales arruinan la experiencia del vino y generan residuos.</p></div></div>
+      <div class="reveal" style="flex:1 1 320px; position:relative;"><span style="position:absolute; top:-54px; left:-6px; font-weight:900; font-size:170px; line-height:1; color:rgba(255,77,14,0.16); letter-spacing:-0.05em; pointer-events:none;">02</span><div style="position:relative;"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">La solución</span><p style="margin:16px 0 0; color:var(--muted); font-size:17px; font-weight:300; line-height:1.75;">Un decantador irrompible, reutilizable y reciclable, que eleva la experiencia del vino en festivales.</p></div></div>
+    </div>
+  </section>  <section style="max-width:1160px; margin:0 auto; padding:110px 64px 80px;">
+    <div class="reveal"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">En palabras</span><div style="margin-top:48px;"><blockquote style="margin:0; text-align:center;"><span style="display:block; color:#FF4D0E; font-size:64px; line-height:0.5; font-weight:800;">“</span><p style="margin:10px auto 0; max-width:820px; color:var(--fg); font-weight:300; font-size:clamp(24px,3.4vw,40px); line-height:1.3; letter-spacing:-0.01em;">Un festival masivo puede servir buen vino sin vidrio y sin descartables: solo hay que diseñarlo.</p><span style="display:block; margin-top:24px; color:var(--muted); font-size:14px; font-weight:600; letter-spacing:0.06em;">Xipa · Cosquín Rock 2023</span></blockquote></div></div>
+  </section>  <section class="reveal" style="padding:30px 0 30px; overflow:hidden;">
+    <div style="max-width:1160px; margin:0 auto; padding:0 64px; display:flex; align-items:flex-end; justify-content:space-between; gap:20px;"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">Galería</span><span style="color:var(--muted); font-size:12px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase;">Arrastrá →</span></div>
+    <div class="hscroll" style="margin-top:28px; display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding:0 64px 14px;"><div class="zoomimg" style="position:relative; flex:0 0 auto; width:min(80vw,520px); aspect-ratio:4/5; border-radius:18px; scroll-snap-align:center; box-shadow:0 24px 56px rgba(0,0,0,0.18);"><div class="slotimg slot-empty" data-slot="det-cosquin-2" style="position:absolute; inset:0; width:100%; height:100%; display:block; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--surface); border:1.5px dashed var(--line2); color:var(--muted); text-align:center; padding:12px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span style="font-size:12px; font-weight:500; letter-spacing:.01em; opacity:.8;">Cosquín Rock 1</span></div></div><div class="zoomimg" style="position:relative; flex:0 0 auto; width:min(80vw,520px); aspect-ratio:4/5; border-radius:18px; scroll-snap-align:center; box-shadow:0 24px 56px rgba(0,0,0,0.18);"><div class="slotimg slot-empty" data-slot="det-cosquin-3" style="position:absolute; inset:0; width:100%; height:100%; display:block; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--surface); border:1.5px dashed var(--line2); color:var(--muted); text-align:center; padding:12px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span style="font-size:12px; font-weight:500; letter-spacing:.01em; opacity:.8;">Cosquín Rock 2</span></div></div><div class="zoomimg" style="position:relative; flex:0 0 auto; width:min(80vw,520px); aspect-ratio:4/5; border-radius:18px; scroll-snap-align:center; box-shadow:0 24px 56px rgba(0,0,0,0.18);"><div class="slotimg slot-empty" data-slot="det-cosquin-4" style="position:absolute; inset:0; width:100%; height:100%; display:block; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; background:var(--surface); border:1.5px dashed var(--line2); color:var(--muted); text-align:center; padding:12px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="opacity:.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span style="font-size:12px; font-weight:500; letter-spacing:.01em; opacity:.8;">Cosquín Rock 3</span></div></div></div>
+  </section>  <section style="max-width:1160px; margin:0 auto; padding:70px 64px;"><div class="reveal"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">El proceso</span></div><div style="display:flex; flex-wrap:wrap; gap:28px; margin-top:36px;"><div class="reveal" style="flex:1 1 210px; border-top:2px solid #FF4D0E; padding-top:18px;"><span style="display:block; color:#FF4D0E; font-weight:800; font-size:15px; letter-spacing:0.1em;">01</span><h4 style="margin:10px 0 0; color:var(--fg); font-weight:700; font-size:19px; letter-spacing:-0.01em;">Diseño</h4><p style="margin:9px 0 0; color:var(--muted); font-size:15px; font-weight:300; line-height:1.55;">Forma que realza aroma y servicio.</p></div><div class="reveal" style="flex:1 1 210px; border-top:2px solid #FF4D0E; padding-top:18px;"><span style="display:block; color:#FF4D0E; font-weight:800; font-size:15px; letter-spacing:0.1em;">02</span><h4 style="margin:10px 0 0; color:var(--fg); font-weight:700; font-size:19px; letter-spacing:-0.01em;">Material</h4><p style="margin:9px 0 0; color:var(--muted); font-size:15px; font-weight:300; line-height:1.55;">Irrompible, apto para multitudes.</p></div><div class="reveal" style="flex:1 1 210px; border-top:2px solid #FF4D0E; padding-top:18px;"><span style="display:block; color:#FF4D0E; font-weight:800; font-size:15px; letter-spacing:0.1em;">03</span><h4 style="margin:10px 0 0; color:var(--fg); font-weight:700; font-size:19px; letter-spacing:-0.01em;">Reúso</h4><p style="margin:9px 0 0; color:var(--muted); font-size:15px; font-weight:300; line-height:1.55;">Se lava y vuelve al próximo evento.</p></div></div></section>  <section style="width:100%; background:#FF4D0E;"><div style="max-width:1160px; margin:0 auto; padding:100px 64px;"><div class="reveal"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#fff; font-weight:700; opacity:.8;">El impacto</span></div><div style="display:flex; flex-wrap:wrap; gap:24px; margin-top:36px;"><div class="reveal" style="flex:1 1 230px; border-top:1px solid rgba(255,255,255,0.3); padding-top:24px;"><span style="display:block; font-weight:800; font-size:clamp(40px,5vw,72px); color:#fff; letter-spacing:-0.03em; line-height:0.9;">100%</span><p style="margin:14px 0 0; color:rgba(255,255,255,0.85); font-size:15px; font-weight:300; line-height:1.5;">reutilizable y seguro</p></div><div class="reveal" style="flex:1 1 230px; border-top:1px solid rgba(255,255,255,0.3); padding-top:24px;"><span style="display:block; font-weight:800; font-size:clamp(40px,5vw,72px); color:#fff; letter-spacing:-0.03em; line-height:0.9;">0</span><p style="margin:14px 0 0; color:rgba(255,255,255,0.85); font-size:15px; font-weight:300; line-height:1.5;">vidrio en el predio</p></div><div class="reveal" style="flex:1 1 230px; border-top:1px solid rgba(255,255,255,0.3); padding-top:24px;"><span style="display:block; font-weight:800; font-size:clamp(40px,5vw,72px); color:#fff; letter-spacing:-0.03em; line-height:0.9;">+Experiencia</span><p style="margin:14px 0 0; color:rgba(255,255,255,0.85); font-size:15px; font-weight:300; line-height:1.5;">vino bien servido</p></div></div></div></section>  <section style="max-width:1160px; margin:0 auto; padding:90px 64px;"><div class="reveal" style="display:flex; flex-wrap:wrap; gap:48px; align-items:flex-start;"><div style="flex:1 1 260px;"><span style="display:block; font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:#FF4D0E; font-weight:700;">Ficha técnica</span><h3 style="margin:14px 0 0; color:var(--fg); font-weight:800; font-size:clamp(28px,3.4vw,44px); letter-spacing:-0.02em; line-height:1.0;">En detalle.</h3></div><div style="flex:2 1 420px;"><div style="display:flex; justify-content:space-between; gap:20px; padding:18px 0; border-top:1px solid var(--line);"><span style="color:var(--muted); font-size:14px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase;">Contexto</span><span style="color:var(--fg); font-size:16px; font-weight:600; text-align:right;">Festival masivo</span></div><div style="display:flex; justify-content:space-between; gap:20px; padding:18px 0; border-top:1px solid var(--line);"><span style="color:var(--muted); font-size:14px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase;">Seguridad</span><span style="color:var(--fg); font-size:16px; font-weight:600; text-align:right;">Sin vidrio</span></div><div style="display:flex; justify-content:space-between; gap:20px; padding:18px 0; border-top:1px solid var(--line);"><span style="color:var(--muted); font-size:14px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase;">Reutilizable</span><span style="color:var(--fg); font-size:16px; font-weight:600; text-align:right;">100%</span></div><div style="display:flex; justify-content:space-between; gap:20px; padding:18px 0; border-top:1px solid var(--line);"><span style="color:var(--muted); font-size:14px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase;">Reciclable</span><span style="color:var(--fg); font-size:16px; font-weight:600; text-align:right;">Sí</span></div></div></div></section>  <section style="max-width:1280px; margin:0 auto; padding:10px 64px 120px; display:flex; flex-wrap:wrap; gap:16px;">
+    <a href="proyecto-cafezazo.html" style="flex:1 1 280px; display:flex; flex-direction:column; gap:8px; padding:32px; border:1px solid var(--line); border-radius:18px; text-decoration:none; transition:background .25s;" style-hover="background:var(--surface);"><span style="color:var(--muted); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; font-weight:600;">← Anterior</span><span style="color:var(--fg); font-weight:800; font-size:26px; letter-spacing:-0.02em;">Cafezazo</span></a>
+    <a href="proyecto-vial.html" style="flex:1 1 280px; display:flex; flex-direction:column; gap:8px; padding:32px; border:1px solid var(--line); border-radius:18px; text-decoration:none; text-align:right; transition:background .25s;" style-hover="background:var(--surface);"><span style="color:var(--muted); font-size:12px; letter-spacing:0.16em; text-transform:uppercase; font-weight:600;">Siguiente →</span><span style="color:var(--fg); font-weight:800; font-size:26px; letter-spacing:-0.02em;">Seguridad vial</span></a>
+  </section>
+</main>
+  <footer id="contacto" style="position:relative; min-height:100vh; width:100%; background:var(--bg0); border-top:1px solid var(--line); display:flex; flex-direction:column; overflow:hidden;">
+    <div style="position:absolute; top:14%; left:50%; transform:translateX(-50%); width:900px; height:900px; max-width:120vw; border-radius:50%; background:radial-gradient(circle, rgba(255,77,14,0.12), transparent 62%); pointer-events:none;"></div>
+    <div style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; max-width:1400px; width:100%; margin:0 auto; padding:130px 64px 30px;">
+      <h2 style="margin:0; color:var(--fg); letter-spacing:-0.035em; line-height:0.9;"><span style="display:block; font-weight:200; font-size:clamp(40px,5.4vw,76px);">Hablemos de tu</span><span style="display:block; font-weight:800; font-size:clamp(60px,9vw,132px);">próximo proyecto.</span></h2>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:18px; margin-top:44px;">
+        <a href="https://wa.me/5493512550067" style="display:inline-flex; align-items:center; gap:10px; padding:20px 38px; background:#FF4D0E; color:#fff; font-weight:600; font-size:17px; border-radius:100px; text-decoration:none; transition:transform .25s ease;" style-hover="transform:translateY(-3px);">Escribinos por WhatsApp →</a>
+        <a href="contacto.html" style="display:inline-flex; align-items:center; gap:8px; color:var(--fg); font-weight:500; font-size:16px; text-decoration:none; opacity:.7;" style-hover="opacity:1;">Ir a Contacto ↗</a>
+      </div>
+    </div>
+    <div style="position:relative; max-width:1400px; width:100%; margin:0 auto; padding:36px 64px; display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:48px; align-items:start; border-top:1px solid var(--line3);">
+      <div>
+        <p style="margin:0; color:var(--muted); font-size:14px; font-weight:300; line-height:1.6; max-width:260px;">Río de Janeiro 137<br>Villa Allende, Córdoba<br>Argentina</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <a href="index.html" style="color:var(--muted); font-size:14px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Home</a>
+        <a href="oportunidad.html" style="color:var(--muted); font-size:14px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Oportunidad</a>
+        <a href="metodologia.html" style="color:var(--muted); font-size:14px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Metodología</a>
+        <a href="equipo.html" style="color:var(--muted); font-size:14px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Equipo</a>
+        <a href="proyectos.html" style="color:var(--muted); font-size:14px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Proyectos</a>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <a href="https://wa.me/5493512550067" style="color:#FF4D0E; font-size:14px; text-decoration:none;">WhatsApp +54 351 2550067 ↗</a>
+        <a href="https://instagram.com/xipa.ok" style="color:#FF4D0E; font-size:14px; text-decoration:none;">Instagram ↗</a>
+        <a href="https://www.linkedin.com/company/xipa-s-a" style="color:#FF4D0E; font-size:14px; text-decoration:none;">LinkedIn ↗</a>
+        <a href="https://www.youtube.com/channel/UCVbcT6h5xlVJE-UPdggeq9Q" style="color:#FF4D0E; font-size:14px; text-decoration:none;">YouTube ↗</a>
+      </div>
+    </div>
+    <div style="position:relative; display:flex; justify-content:space-between; align-items:center; max-width:1400px; width:100%; margin:0 auto; padding:18px 64px; border-top:1px solid var(--line3);">
+      <span style="color:var(--muted); font-size:12px;">© 2026 Xipa · Evolucionemos el plástico</span>
+      <a href="index.html" style="color:var(--muted); font-size:12px; text-decoration:none; transition:color .2s;" style-hover="color:var(--fg);">Volver al inicio ↑</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
