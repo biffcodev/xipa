@@ -1,9 +1,10 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { hasImg, imgSrc, type Img } from "@/lib/img";
 
 type Props = {
-  image: string;
+  image: Img;
   alt: string;
   eyebrow: string;
   line1: string;
@@ -30,7 +31,7 @@ export default function PageHero({ image, alt, eyebrow, line1, line2, subtitle, 
   return (
     <section className="relative h-screen overflow-hidden bg-[#0d0d0c]">
       <div ref={bgRef} className="absolute inset-[-10%_-2%] will-change-transform scale-[1.12]">
-        <Image src={image} alt={alt} fill sizes="100vw" priority className="object-cover" />
+        {hasImg(image) && <Image src={imgSrc(image)} alt={alt} fill sizes="100vw" priority className="object-cover" />}
       </div>
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(110deg,rgba(0,0,0,0.7)_0%,rgba(0,0,0,0.32)_48%,rgba(0,0,0,0.05)_74%)]" />
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(0deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_36%)]" />

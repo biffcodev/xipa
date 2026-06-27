@@ -1,17 +1,13 @@
 "use client";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import Reveal from "@/components/Reveal";
+import SmartImage from "@/components/SmartImage";
+import { methodologySteps as defaultSteps } from "@/lib/defaults";
+import type { Img } from "@/lib/img";
 
-const STEPS = [
-  { n: "01", title: "Ecodiseño de envases y productos", text: "Repensamos el producto desde su origen: menos material, más vida útil y pensado para volver a empezar.", img: "/images/pilar-reducir.jpg" },
-  { n: "02", title: "Investigación y desarrollo", text: "De la idea a una solución viable: investigamos materiales, validamos hipótesis y desarrollamos el diseño.", img: "/images/pilar-repensar.jpg" },
-  { n: "03", title: "Matricería y prototipado", text: "Materializamos el diseño con precisión: matrices, moldes y prototipos funcionales listos para producir.", img: "/images/pilar-redisenar.jpg" },
-  { n: "04", title: "Producción con material reciclado", text: "Producimos con materia prima reciclada, trazable y local. Tintas al agua y monomaterial para reciclar otra vez.", img: "/images/pilar-reutilizar.jpg" },
-  { n: "05", title: "Consultoría en economía circular", text: "Acompañamos a marcas y eventos a cerrar el ciclo: de residuos a recursos, con impacto medible.", img: "/images/hero-circular.jpg" },
-];
+type Step = { title: string; text?: string; image?: Img };
 
-export default function MethodologyTimeline() {
+export default function MethodologyTimeline({ steps = defaultSteps as Step[] }: { steps?: Step[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -34,22 +30,22 @@ export default function MethodologyTimeline() {
         <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-line -translate-x-1/2 hidden md:block">
           <div ref={fillRef} className="absolute left-0 top-0 w-full h-0 bg-brand [box-shadow:0_0_12px_rgba(255,77,14,0.6)]" />
         </div>
-        {STEPS.map((s, i) => {
+        {steps.map((s, i) => {
           const textLeft = i % 2 === 0;
           const Text = (
             <div>
-              <span className="block text-brand text-[clamp(40px,5vw,72px)] font-extrabold tracking-[-0.02em] leading-[0.9]">{s.n}</span>
+              <span className="block text-brand text-[clamp(40px,5vw,72px)] font-extrabold tracking-[-0.02em] leading-[0.9]">0{i + 1}</span>
               <h3 className="mt-[18px] text-fg font-extrabold text-[clamp(26px,2.8vw,38px)] tracking-[-0.02em] leading-none">{s.title}</h3>
               <p className="mt-4 max-w-[460px] text-muted text-[17px] font-light leading-[1.6]">{s.text}</p>
             </div>
           );
           const Img = (
             <div className="relative rounded-[20px] overflow-hidden aspect-[4/3] shadow-[0_28px_64px_rgba(0,0,0,0.18)]">
-              <Image src={s.img} alt={s.title} fill sizes="(max-width:768px) 100vw, 600px" className="object-cover" />
+              <SmartImage img={s.image} alt={s.title} />
             </div>
           );
           return (
-            <Reveal key={s.n}>
+            <Reveal key={i}>
               <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-14 items-center py-12 md:py-[60px]">
                 {textLeft ? (<>{Text}{Img}</>) : (<>{Img}{Text}</>)}
               </div>

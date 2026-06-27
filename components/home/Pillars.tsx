@@ -1,16 +1,13 @@
 "use client";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
+import SmartImage from "@/components/SmartImage";
+import { pillars as defaultPillars } from "@/lib/defaults";
+import type { Img } from "@/lib/img";
 
-const PILLARS = [
-  { img: "/images/pilar-reducir.jpg", title: "Reducir", text: "Reducimos el peso de los productos mediante mejoras técnicas en los materiales o eliminando elementos del envase." },
-  { img: "/images/pilar-redisenar.jpg", title: "Rediseñar", text: "Rediseñamos los productos para aumentar su capacidad, rendir más su contenido y mejorar los procesos involucrados." },
-  { img: "/images/pilar-repensar.jpg", title: "Repensar", text: "Incorporamos material reciclado en nuevos productos, con piezas fácilmente separables y compatibles para el reciclado." },
-  { img: "/images/pilar-reutilizar.jpg", title: "Reutilizar", text: "Sustituimos productos de un solo uso por reutilizables y mejoramos sus características para alargar su vida útil." },
-];
+type Pillar = { title: string; text?: string; image?: Img };
 const OVERLAY = "bg-[linear-gradient(95deg,rgba(244,241,235,0.82)_0%,rgba(244,241,235,0.35)_38%,rgba(244,241,235,0)_62%)]";
 
-export default function Pillars() {
+export default function Pillars({ pillars = defaultPillars as Pillar[] }: { pillars?: Pillar[] }) {
   const secRef = useRef<HTMLElement>(null);
   const scenes = useRef<(HTMLDivElement | null)[]>([]);
   const imgs = useRef<(HTMLDivElement | null)[]>([]);
@@ -18,6 +15,7 @@ export default function Pillars() {
   const ix = useRef<(HTMLButtonElement | null)[]>([]);
   const bar = useRef<HTMLDivElement>(null);
   const counter = useRef<HTMLSpanElement>(null);
+  const count = pillars.length || 1;
 
   useEffect(() => {
     let raf = 0;
@@ -27,7 +25,7 @@ export default function Pillars() {
         const total = sec.offsetHeight - window.innerHeight;
         const scrolled = Math.min(total, Math.max(0, -sec.getBoundingClientRect().top));
         const prog = total > 0 ? scrolled / total : 0;
-        const seg = Math.min(3.999, prog * 4);
+        const seg = Math.min(count - 0.001, prog * count);
         const idx = Math.floor(seg);
         const frac = seg - idx;
         scenes.current.forEach((sc, k) => {
@@ -39,7 +37,7 @@ export default function Pillars() {
           }
         });
         if (bar.current) bar.current.style.width = `${frac * 100}%`;
-        if (counter.current) counter.current.textContent = `0${idx + 1} / 04`;
+        if (counter.current) counter.current.textContent = `0${idx + 1} / 0${count}`;
         ix.current.forEach((b, k) => {
           if (!b) return;
           b.style.opacity = k === idx ? "1" : "0.42";
@@ -53,22 +51,22 @@ export default function Pillars() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [count]);
 
   const goStat = (i: number) => {
     const sec = secRef.current;
     if (!sec) return;
     const total = sec.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: sec.offsetTop + total * ((i + 0.5) / 4), behavior: "smooth" });
+    window.scrollTo({ top: sec.offsetTop + total * ((i + 0.5) / count), behavior: "smooth" });
   };
 
   return (
     <section ref={secRef} id="ecodiseno" className="relative w-full h-[460vh] bg-[#f4f1eb]">
       <div className="sticky top-0 h-screen overflow-hidden bg-[#f4f1eb]">
-        {PILLARS.map((p, i) => (
+        {pillars.map((p, i) => (
           <div key={i} ref={(el) => { scenes.current[i] = el; }} className="absolute inset-0 transition-opacity duration-[900ms] ease-out" style={{ opacity: i === 0 ? 1 : 0 }}>
             <div ref={(el) => { imgs.current[i] = el; }} className="absolute top-[-12%] left-0 w-full h-[124%]">
-              <Image src={p.img} alt={p.title} fill sizes="100vw" className="object-cover" />
+              <SmartImage img={p.image} alt={p.title} />
             </div>
             <div className={`absolute inset-0 pointer-events-none ${OVERLAY}`} />
             <div ref={(el) => { texts.current[i] = el; }} className="absolute left-8 right-8 md:left-16 md:right-16 bottom-[12vh] max-w-[920px] pointer-events-none">
@@ -80,11 +78,11 @@ export default function Pillars() {
 
         <div className="absolute top-[13vh] left-8 right-8 md:left-16 md:right-16 flex items-center justify-between pointer-events-none">
           <span className="text-xs tracking-[0.24em] uppercase text-[#56524d] font-bold">Soluciones de ecodiseño</span>
-          <span ref={counter} className="text-xs tracking-[0.14em] text-brand font-bold">01 / 04</span>
+          <span ref={counter} className="text-xs tracking-[0.14em] text-brand font-bold">01 / 0{count}</span>
         </div>
 
         <div className="absolute top-1/2 right-8 md:right-16 -translate-y-1/2 hidden sm:flex flex-col gap-1 items-end z-[6]">
-          {PILLARS.map((p, i) => (
+          {pillars.map((p, i) => (
             <button key={i} ref={(el) => { ix.current[i] = el; }} onClick={() => goStat(i)} className="flex items-center gap-3 bg-transparent border-none py-[7px] cursor-pointer text-left transition-opacity" style={{ opacity: i === 0 ? 1 : 0.42 }}>
               <span className="ix-num text-[13px] font-bold tracking-[0.1em]" style={{ color: i === 0 ? "#FF4D0E" : "#23211e" }}>0{i + 1}</span>
               <span className="text-[15px] font-semibold text-[#23211e] tracking-[-0.01em]">{p.title}</span>

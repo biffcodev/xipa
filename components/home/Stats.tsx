@@ -1,15 +1,11 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { homeContent, stats as defaultStats } from "@/lib/defaults";
 
-const STATS = [
-  { n: 400, unit: "Mt", label: "Producción global", desc: "de plástico se producen cada año en el mundo" },
-  { n: 9, unit: "%", label: "Reciclaje real", desc: "del plástico producido se recicla realmente" },
-  { n: 11, unit: "Mt", label: "Contaminación", desc: "de plástico llegan al océano cada año" },
-  { n: 500, unit: "años", label: "Degradación", desc: "tarda en descomponerse una botella plástica" },
-  { n: 79, unit: "%", label: "Destino final", desc: "termina en vertederos o en el ambiente" },
-];
+type Intro = typeof homeContent.stats;
+type Stat = { value: number; unit?: string; label?: string; desc?: string };
 
-export default function Stats() {
+export default function Stats({ intro = homeContent.stats, stats = defaultStats as Stat[] }: { intro?: Intro; stats?: Stat[] }) {
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -55,15 +51,15 @@ export default function Stats() {
   return (
     <section className="relative w-full bg-bg3 pt-[120px] pb-[130px] border-t border-line4 overflow-hidden">
       <div className="relative px-6 md:px-16 max-w-[1200px] mx-auto">
-        <span className="block text-xs tracking-[0.22em] uppercase text-brand font-bold">El problema</span>
+        <span className="block text-xs tracking-[0.22em] uppercase text-brand font-bold">{intro.eyebrow}</span>
         <h2 className="mt-3.5 text-fg tracking-[-0.03em] leading-[0.98]">
-          <span className="block font-extralight text-[34px]">Los números que</span>
-          <span className="block font-extrabold text-[clamp(40px,8vw,62px)]">no podemos ignorar.</span>
+          <span className="block font-extralight text-[34px]">{intro.line1}</span>
+          <span className="block font-extrabold text-[clamp(40px,8vw,62px)]">{intro.line2}</span>
         </h2>
-        <span className="inline-block mt-[18px] text-muted text-[13px] font-medium tracking-[0.14em] uppercase">Tocá un dato para reproducir</span>
+        <span className="inline-block mt-[18px] text-muted text-[13px] font-medium tracking-[0.14em] uppercase">{intro.hint}</span>
       </div>
       <div className="max-w-[1200px] mx-auto mt-14 px-6 md:px-16 border-b border-line">
-        {STATS.map((s, i) => (
+        {stats.map((s, i) => (
           <div
             key={i}
             ref={(el) => { rowRefs.current[i] = el; }}
@@ -72,7 +68,7 @@ export default function Stats() {
             <div>
               <span className="block text-brand text-[13px] font-bold tracking-[0.14em]">0{i + 1}</span>
               <div className="flex items-baseline gap-3 mt-3">
-                <span data-count={s.n} className="font-extrabold text-[clamp(68px,8.5vw,124px)] leading-[0.8] text-fg tracking-[-0.045em]">0</span>
+                <span data-count={s.value} className="font-extrabold text-[clamp(68px,8.5vw,124px)] leading-[0.8] text-fg tracking-[-0.045em]">0</span>
                 <span className="font-light text-[clamp(26px,3.4vw,44px)] text-brand leading-none">{s.unit}</span>
               </div>
               <div className="mt-[22px] h-0.5 bg-line max-w-[320px]"><div data-rule className="h-0.5 w-0 bg-brand transition-[width] duration-[1300ms] ease-out" /></div>

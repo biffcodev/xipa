@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import SlotImage from "@/components/SlotImage";
+import SmartImage from "@/components/SmartImage";
+import type { Img } from "@/lib/img";
 
-type Props = { slot: string; tag: string; title: string; desc: string; year: string; href: string; counter: string };
+type Props = { img: Img; tag: string; title: string; desc?: string; year?: string; href: string; counter: string };
 
-export default function ProjectShowcase({ slot, tag, title, desc, year, href, counter }: Props) {
+export default function ProjectShowcase({ img, tag, title, desc, year, href, counter }: Props) {
   const bgRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const onScroll = () => {
@@ -23,7 +24,7 @@ export default function ProjectShowcase({ slot, tag, title, desc, year, href, co
   return (
     <section className="relative h-screen overflow-hidden">
       <div ref={bgRef} className="absolute inset-[-10%_-2%] will-change-transform scale-[1.12]">
-        <SlotImage id={slot} alt={title} className="absolute inset-0 w-full h-full" />
+        <SmartImage img={img} alt={title} />
       </div>
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(110deg,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.34)_46%,rgba(0,0,0,0.04)_72%)]" />
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(0deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_38%)]" />
