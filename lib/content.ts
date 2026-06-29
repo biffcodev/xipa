@@ -1,5 +1,5 @@
 import "server-only";
-import { client } from "@/sanity/lib/client";
+import { serverClient } from "@/lib/server/sanity";
 import { projectId } from "@/sanity/env";
 import * as D from "@/lib/defaults";
 import { PROJECTS } from "@/lib/projects";
@@ -24,7 +24,7 @@ function withImages<T extends { slug: string }>(p: T) {
 async function fetchSanity<T>(query: string, params: Record<string, unknown> = {}): Promise<T | null> {
   if (!enabled) return null;
   try {
-    return await client.fetch<T>(query, params, { next: { revalidate: 60 } });
+    return await serverClient.fetch<T>(query, params, { next: { revalidate: 60 } });
   } catch {
     return null;
   }
