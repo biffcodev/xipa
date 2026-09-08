@@ -12,6 +12,7 @@ export type Beat = {
   plain?: string;
   bold?: string;
   sub?: string;
+  image?: string;
 };
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -41,21 +42,21 @@ function catmullRom(points: [number, number][]) {
   return d;
 }
 
-const AMP = 0.13; // horizontal swing of the meander (fraction of width)
-const VARY = [1, 0.94, 1.08, 0.9, 1.04, 0.96];
+const AMP = 0.06; // gentle horizontal swing — narrow & vertical
+const VARY = [1, 0.82, 1.12, 0.88, 1.06, 0.9];
 
 function buildGeom(W: number, H: number, N: number) {
   const stations: StationMeta[] = [];
   for (let i = 0; i < N; i++) {
     const sign = i % 2 === 0 ? -1 : 1; // station 0 leans left -> its text sits on the right
     const xPct = 0.5 + AMP * sign * VARY[i % VARY.length];
-    const yPct = 0.2 + 0.6 * (N === 1 ? 0 : i / (N - 1));
+    const yPct = 0.2 + 0.56 * (N === 1 ? 0 : i / (N - 1));
     stations.push({ xPct, yPct, side: xPct < 0.5 ? "right" : "left", px: xPct * W, py: yPct * H });
   }
   const pts: [number, number][] = [];
-  pts.push([stations[0].px, -0.06 * H]);
+  pts.push([stations[0].px, -0.08 * H]);
   stations.forEach((s) => pts.push([s.px, s.py]));
-  pts.push([stations[N - 1].px, 1.06 * H]);
+  pts.push([stations[N - 1].px, 1.08 * H]);
   return { pathD: catmullRom(pts), stations };
 }
 
@@ -100,15 +101,24 @@ function BeatBody({ b, idx, total }: { b: Beat; idx: number; total: number }) {
         </>
       ) : b.kind === "pivot" ? (
         <>
-          <h2 className="text-[clamp(30px,3.8vw,56px)] font-light leading-[1.06] tracking-[-0.03em] text-fg">
+          <h2 className="text-[clamp(30px,3.6vw,54px)] font-light leading-[1.06] tracking-[-0.03em] text-fg">
             {b.plain}
             <span className="font-extrabold text-brand">{b.bold}</span>
           </h2>
           {b.sub && <p className="mt-4 max-w-[36ch] text-base font-light text-muted">{b.sub}</p>}
         </>
       ) : (
-        <h2 className="text-[clamp(30px,3.6vw,54px)] font-extrabold leading-[1.0] tracking-[-0.03em] text-fg">{b.headline}</h2>
+        <h2 className="text-[clamp(30px,3.4vw,52px)] font-extrabold leading-[1.0] tracking-[-0.03em] text-fg">{b.headline}</h2>
       )}
+    </div>
+  );
+}
+
+function Frame({ src }: { src: string }) {
+  return (
+    <div className="overflow-hidden rounded-[20px] shadow-[0_30px_70px_rgba(0,0,0,0.18)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" className="aspect-[4/3] w-full object-cover" />
     </div>
   );
 }
@@ -120,7 +130,8 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
   const pathRef = useRef<SVGPathElement>(null);
   const dotRef = useRef<SVGGElement>(null);
   const glowRef = useRef<SVGCircleElement>(null);
-  const beatRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const textRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
   const metaRef = useRef<StationMeta[]>([]);
   const geomRef = useRef<{ L: number; keys: [number, number][]; timing: Timing[] } | null>(null);
 
@@ -161,14 +172,12 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
     return () => window.removeEventListener("resize", measure);
   }, [enabled, N]);
 
-  // After the curve is in the DOM, sample it to find each station's distance,
-  // then build the dwell timeline.
   useEffect(() => {
     const path = pathRef.current;
     const meta = metaRef.current;
     if (!path || !pathD || meta.length === 0) return;
     const L = path.getTotalLength();
-    const S = 500;
+    const S = 600;
     const xs: number[] = [];
     const ys: number[] = [];
     for (let s = 0; s <= S; s++) {
@@ -226,11 +235,17 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
             glowRef.current.setAttribute("cy", String(pt.y));
           }
           geom.timing.forEach((t, i) => {
-            const el = beatRefs.current[i];
-            if (!el) return;
             const op = beatOpacity(t, p);
-            el.style.opacity = String(op);
-            el.style.transform = `translateY(${(1 - op) * 24}px)`;
+            const tx = textRefs.current[i];
+            if (tx) {
+              tx.style.opacity = String(op);
+              tx.style.transform = `translateY(calc(-50% + ${(1 - op) * 22}px))`;
+            }
+            const im = imgRefs.current[i];
+            if (im) {
+              im.style.opacity = String(op);
+              im.style.transform = `translateY(calc(-50% + ${(1 - op) * 38}px))`;
+            }
           });
         }
       }
@@ -249,6 +264,11 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
             {beats.map((b, i) => (
               <li key={i} className="relative">
                 <span className="absolute -left-[38px] top-1 h-3.5 w-3.5 rounded-full bg-brand ring-4 ring-brand/15" />
+                {b.image && (
+                  <div className="mb-5 max-w-[280px]">
+                    <Frame src={b.image} />
+                  </div>
+                )}
                 <BeatBody b={b} idx={i} total={N} />
               </li>
             ))}
@@ -260,7 +280,7 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
 
   // ---- Pinned scrollytelling (desktop) ----
   return (
-    <section ref={wrapRef} className="relative bg-bg1" style={{ height: `${N * 110 + 30}vh` }}>
+    <section ref={wrapRef} className="relative bg-bg1" style={{ height: `${N * 105 + 30}vh` }}>
       <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden">
         <div className="pointer-events-none absolute left-8 top-8 font-mono text-[11px] uppercase tracking-[0.3em] text-fg/30">
           // La oportunidad
@@ -293,26 +313,47 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
           </g>
         </svg>
 
+        {/* text cards */}
         {stations.map((s, i) => (
           <div
-            key={i}
-            className="absolute w-[min(440px,32vw)]"
+            key={`t${i}`}
+            ref={(el) => {
+              textRefs.current[i] = el;
+            }}
+            className="absolute w-[min(430px,31vw)]"
             style={{
               top: `${s.yPct * 100}%`,
               transform: "translateY(-50%)",
-              ...(s.side === "right" ? { left: "66%" } : { right: "66%" }),
+              opacity: 0,
+              willChange: "opacity, transform",
+              ...(s.side === "right" ? { left: "60%" } : { right: "60%" }),
             }}
           >
-            <div
-              ref={(el) => {
-                beatRefs.current[i] = el;
-              }}
-              style={{ opacity: 0, transform: "translateY(24px)", willChange: "opacity, transform" }}
-            >
-              <BeatBody b={beats[i]} idx={i} total={N} />
-            </div>
+            <BeatBody b={beats[i]} idx={i} total={N} />
           </div>
         ))}
+
+        {/* images (opposite side of the text) */}
+        {stations.map((s, i) =>
+          beats[i].image ? (
+            <div
+              key={`i${i}`}
+              ref={(el) => {
+                imgRefs.current[i] = el;
+              }}
+              className="absolute w-[min(360px,26vw)]"
+              style={{
+                top: `${s.yPct * 100}%`,
+                transform: "translateY(-50%)",
+                opacity: 0,
+                willChange: "opacity, transform",
+                ...(s.side === "right" ? { right: "60%" } : { left: "60%" }),
+              }}
+            >
+              <Frame src={beats[i].image!} />
+            </div>
+          ) : null,
+        )}
       </div>
     </section>
   );

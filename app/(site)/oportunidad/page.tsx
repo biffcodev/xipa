@@ -14,18 +14,21 @@ export default async function Oportunidad() {
   const [p, pillars, stats] = await Promise.all([getPage("oportunidad"), getPillars(), getStats()]);
 
   const statBeats: Beat[] = stats
-    .slice(0, 4)
+    .slice(0, 3)
     .map((s) => ({ kind: "stat" as const, value: s.value, unit: s.unit, label: s.label, desc: s.desc }));
+  if (statBeats[0]) statBeats[0].image = "/images/hero-circular.jpg";
 
   const beats: Beat[] = [
     { kind: "intro", eyebrow: "El problema", headline: "Más plástico del que podemos reciclar." },
     ...statBeats,
+    { kind: "pivot", eyebrow: "El giro", plain: p.statement.plain, bold: p.statement.bold, image: "/images/pilar-redisenar.jpg" },
     {
       kind: "pivot",
-      eyebrow: "El giro",
-      plain: p.statement.plain,
-      bold: p.statement.bold,
-      sub: "Por eso trabajamos con cuatro soluciones de ecodiseño para convertir ese residuo en valor.",
+      eyebrow: "La oportunidad",
+      plain: "Hacé lo que estás pensando, ",
+      bold: "con más valor.",
+      sub: "En el mismo tiempo y al mismo costo. Resolvemos diseño industrial, mejoramos el desempeño y reducimos el impacto ambiental.",
+      image: "/images/slots/proc-4.webp",
     },
   ];
 
