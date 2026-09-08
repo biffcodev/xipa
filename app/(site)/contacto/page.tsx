@@ -35,12 +35,14 @@ export default async function Contacto() {
         <div className="absolute top-[2%] left-1/2 -translate-x-1/2 w-[820px] h-[820px] max-w-[120vw] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(255,77,14,0.12),transparent_62%)]" />
         <div className="relative max-w-[1280px] mx-auto">
           <div className="max-w-[820px]">
-            <span className="block text-xs tracking-[0.24em] uppercase text-brand font-bold">{p.hero.eyebrow}</span>
+            <span className="block text-xs tracking-[0.24em] uppercase text-brand font-bold">{p.hero.eyebrow || "Contacto"}</span>
             <h1 className="mt-5 text-fg tracking-[-0.035em] leading-[0.94]">
-              <span className="block font-extralight text-[clamp(36px,4.8vw,64px)]">{p.hero.line1}</span>
-              <span className="block font-extrabold text-[clamp(48px,7vw,104px)]">{p.hero.line2}</span>
+              <span className="block font-extralight text-[clamp(36px,4.8vw,64px)]">Dale otra</span>
+              <span className="block font-extrabold text-[clamp(48px,7vw,104px)]">vuelta.</span>
             </h1>
-            <p className="mt-6 max-w-[560px] text-muted text-[19px] font-light leading-[1.55]">{p.hero.subtitle}</p>
+            <p className="mt-6 max-w-[600px] text-muted text-[19px] font-light leading-[1.55]">
+              Contanos qué estás pensando. Te decimos cómo hacerlo con más valor, en el mismo tiempo y al mismo costo.
+            </p>
           </div>
 
           <div className="mt-[72px] grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-14 items-start">

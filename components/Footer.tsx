@@ -4,10 +4,12 @@ import { siteSettings as defaults } from "@/lib/defaults";
 
 const NAV = [
   { href: "/", label: "Home" },
-  { href: "/oportunidad", label: "Oportunidad" },
-  { href: "/metodologia", label: "Metodología" },
-  { href: "/equipo", label: "Equipo" },
+  { href: "/la-oportunidad", label: "La oportunidad" },
+  { href: "/como-trabajamos", label: "Cómo trabajamos" },
   { href: "/proyectos", label: "Proyectos" },
+  { href: "/equipo", label: "Equipo" },
+  { href: "/perspectivas", label: "Perspectivas" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
 export default function Footer({ settings = defaults }: { settings?: typeof defaults }) {

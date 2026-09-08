@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export type Beat = {
-  kind: "intro" | "stat" | "pivot" | "list";
+  kind: "intro" | "stat" | "pivot" | "list" | "point";
   eyebrow?: string;
   headline?: string;
   value?: number;
@@ -120,6 +120,11 @@ function BeatBody({ b, idx, total }: { b: Beat; idx: number; total: number }) {
               </li>
             ))}
           </ul>
+        </>
+      ) : b.kind === "point" ? (
+        <>
+          <h2 className="text-[clamp(28px,3.2vw,48px)] font-extrabold leading-[1.02] tracking-[-0.03em] text-fg">{b.headline}</h2>
+          {b.desc && <p className="mt-3 max-w-[30ch] text-lg font-light leading-snug text-muted">{b.desc}</p>}
         </>
       ) : b.kind === "pivot" ? (
         <>

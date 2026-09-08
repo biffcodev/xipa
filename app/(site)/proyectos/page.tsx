@@ -1,59 +1,75 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
-import ProjectShowcase from "@/components/ProjectShowcase";
 import SmartImage from "@/components/SmartImage";
 import { getPage, getProjects } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Proyectos",
-  description: "Proyectos de ecodiseño de XIPA: Grido, Re-vasos, BIO 4, Cafezazo, Cosquín Rock, Seguridad Vial y Abre Baldes.",
+  description:
+    "Proyectos de diseño sistémico de XIPA: rediseños, nuevos diseños y sistemas que reducen impacto sin resignar negocio.",
 };
+
+const FILTERS = ["Todos", "Packaging", "Rediseño", "Nuevo diseño", "Sistema"];
 
 export default async function Proyectos() {
   const [p, projects] = await Promise.all([getPage("proyectos"), getProjects()]);
-  const total = projects.length;
-  const showcase = projects.slice(0, 3);
-  const cards = projects.slice(3);
+
   return (
     <main>
-      <PageHero image={p.hero.image} alt={p.hero.eyebrow} eyebrow={p.hero.eyebrow} line1={p.hero.line1} line2={p.hero.line2} subtitle={p.hero.subtitle} scrollHref="#proyectos-lista" />
+      <PageHero
+        image={p.hero.image}
+        alt="Proyectos XIPA"
+        eyebrow="Proyectos"
+        line1="Soluciones que ya están"
+        line2="en el mercado."
+        subtitle="Rediseños, nuevos diseños y sistemas que reducen impacto sin resignar negocio."
+        scrollHref="#proyectos-lista"
+      />
 
-      <div id="proyectos-lista">
-        {showcase.map((pr, i) => (
-          <ProjectShowcase
-            key={pr.slug}
-            img={(pr as { heroImage?: never }).heroImage}
-            tag={`0${i + 1} — ${(pr.tag || "").toUpperCase()}`}
-            title={pr.title}
-            desc={pr.subtitle}
-            year={pr.meta?.anio}
-            href={`/proyectos/${pr.slug}`}
-            counter={`0${i + 1} / 0${total}`}
-          />
-        ))}
+      {/* Barra de filtros — sólo visual en esta etapa */}
+      <div className="max-w-[1280px] mx-auto px-6 md:px-16 pt-[70px]">
+        <div className="flex flex-wrap gap-2.5">
+          {FILTERS.map((f, i) => (
+            <span
+              key={f}
+              className={
+                i === 0
+                  ? "px-4 py-2 rounded-full text-sm font-semibold bg-brand text-white"
+                  : "px-4 py-2 rounded-full text-sm font-semibold border border-line5 text-muted"
+              }
+            >
+              {f}
+            </span>
+          ))}
+        </div>
       </div>
 
-      <section className="max-w-[1280px] mx-auto px-6 md:px-16 py-[120px]">
-        <span className="block text-xs tracking-[0.22em] uppercase text-brand font-bold">Más proyectos</span>
-        <h2 className="mt-3.5 mb-12 text-fg tracking-[-0.03em] text-[clamp(34px,4.4vw,58px)] font-extrabold leading-none">Y muchos más.</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {cards.map((c, i) => (
-            <Link key={c.slug} href={`/proyectos/${c.slug}`} className="relative h-[440px] rounded-[20px] overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.4)] no-underline block group">
-              <SmartImage img={(c as { heroImage?: never }).heroImage} alt={c.title} className="transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(180deg,rgba(0,0,0,0)_45%,rgba(0,0,0,0.65))]" />
-              <div className="absolute left-7 bottom-7 max-w-[360px] pointer-events-none">
-                <span className="block text-brand text-xs font-bold tracking-[0.18em]">0{i + 4} — {(c.tag || "").toUpperCase()}</span>
-                <span className="block text-onimg font-extrabold text-[34px] tracking-[-0.02em] mt-2">{c.title}</span>
-                <span className="block text-white/[0.78] font-light text-[15px] mt-2 leading-[1.5]">{c.subtitle}</span>
-                <span className="block text-white/50 text-[13px] font-medium mt-3">{c.meta?.anio}</span>
+      <section id="proyectos-lista" className="max-w-[1280px] mx-auto px-6 md:px-16 pt-10 pb-[120px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {projects.map((pr) => (
+            <Link key={pr.slug} href={`/proyectos/${pr.slug}`} className="group block no-underline">
+              <div className="relative aspect-[4/3] rounded-[18px] overflow-hidden bg-bg2 shadow-[0_16px_40px_rgba(0,0,0,0.16)]">
+                <SmartImage
+                  img={(pr as { heroImage?: never }).heroImage}
+                  alt={pr.title}
+                  sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw"
+                  className="transition-transform duration-700 group-hover:scale-105"
+                />
               </div>
+              <h3 className="mt-4 text-fg font-extrabold text-[22px] tracking-[-0.02em] transition-colors group-hover:text-brand">
+                {pr.title}
+              </h3>
+              <p className="mt-1 text-muted text-[13px] font-medium tracking-[0.02em]">
+                {[pr.meta?.cliente, pr.tag, pr.meta?.anio].filter(Boolean).join(" · ")}
+              </p>
             </Link>
           ))}
-          <div className="col-span-1 md:col-span-2 relative h-[300px] rounded-[24px] border border-dashed border-line5 flex flex-col items-center justify-center text-center px-6">
+
+          <div className="relative aspect-[4/3] rounded-[18px] border border-dashed border-line5 flex flex-col items-center justify-center text-center px-6">
             <span className="text-brand text-xs font-bold tracking-[0.18em]">PRÓXIMAMENTE</span>
-            <span className="text-fg font-extrabold text-[40px] tracking-[-0.02em] mt-2.5">Próximos proyectos</span>
-            <span className="text-muted font-light text-base mt-2">Lo que viene en economía circular.</span>
+            <span className="text-fg font-extrabold text-[26px] tracking-[-0.02em] mt-2.5">Próximos proyectos</span>
+            <span className="text-muted font-light text-sm mt-2">Nuevos sistemas en desarrollo.</span>
           </div>
         </div>
       </section>

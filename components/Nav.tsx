@@ -7,10 +7,11 @@ import { useI18n } from "./providers/I18nProvider";
 
 const LINKS = [
   { href: "/", label: "Home" },
-  { href: "/oportunidad", label: "Oportunidad" },
-  { href: "/metodologia", label: "Metodología" },
-  { href: "/equipo", label: "Equipo" },
+  { href: "/la-oportunidad", label: "La oportunidad" },
+  { href: "/como-trabajamos", label: "Cómo trabajamos" },
   { href: "/proyectos", label: "Proyectos" },
+  { href: "/equipo", label: "Equipo" },
+  { href: "/perspectivas", label: "Perspectivas" },
   { href: "/contacto", label: "Contacto" },
 ];
 
@@ -23,8 +24,7 @@ const Sun = () => (
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
-  if (href === "/proyectos") return pathname.startsWith("/proyectos");
-  return pathname === href;
+  return pathname === href || pathname.startsWith(href + "/");
 }
 
 export default function Nav() {

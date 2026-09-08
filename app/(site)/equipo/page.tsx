@@ -13,7 +13,15 @@ export default async function Equipo() {
   const [p, team] = await Promise.all([getPage("equipo"), getTeam()]);
   return (
     <main>
-      <PageHero image={p.hero.image} alt={p.hero.eyebrow} eyebrow={p.hero.eyebrow} line1={p.hero.line1} line2={p.hero.line2} subtitle={p.hero.subtitle} scrollHref="#integrantes" />
+      <PageHero
+        image={p.hero.image}
+        alt="Equipo"
+        eyebrow="Equipo"
+        line1="Con quiénes"
+        line2="vas a trabajar."
+        subtitle="Un equipo que creció dentro de la industria del plástico y pasó más de veinte años investigando circularidad y sustentabilidad. Diseñadores, ingenieros y una red de aliados que se suma según el proyecto."
+        scrollHref="#integrantes"
+      />
 
       <section className="max-w-[1100px] mx-auto px-6 md:px-16 pt-[140px] pb-5">
         <Reveal as="h2" className="m-0 text-fg tracking-[-0.03em] leading-[1.04] text-[clamp(32px,4.6vw,62px)]">
@@ -38,6 +46,34 @@ export default async function Equipo() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      <section id="red" className="bg-bg1 border-t border-line2">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-16 py-[120px]">
+          <Reveal as="span" className="block text-xs tracking-[0.24em] uppercase text-brand font-bold mb-9">Nuestra red</Reveal>
+          <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-14 items-start">
+            <Reveal as="h2" className="m-0 text-fg tracking-[-0.03em] leading-[1.05] text-[clamp(28px,3.6vw,50px)]">
+              <span className="font-extralight">Nos armamos y desarmamos </span>
+              <span className="font-extrabold">según cada desafío.</span>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <p className="text-muted text-[19px] font-light leading-[1.6]">
+                Al núcleo de XIPA se suma, proyecto a proyecto, una red de aliados que amplía lo que
+                podemos resolver: laboratorios que ensayan y validan materiales, proveedores industriales
+                que producen a escala, universidades y centros de investigación con los que desarrollamos,
+                y recicladores que cierran el ciclo. Armamos el equipo que cada desafío necesita y lo
+                desarmamos cuando el proyecto termina.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                {["Laboratorios", "Proveedores industriales", "Universidades", "Recicladores", "Estudios de diseño", "Cámaras y ONGs"].map((chip) => (
+                  <span key={chip} className="inline-flex items-center px-4 py-2 rounded-full border border-line5 bg-bg2 text-fg text-[14px] font-medium">
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
     </main>
