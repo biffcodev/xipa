@@ -42,21 +42,29 @@ function catmullRom(points: [number, number][]) {
   return d;
 }
 
-const AMP = 0.045; // very gentle horizontal swing — open, mostly-vertical curve
-const VARY = [1, 0.8, 1.15, 0.85, 1.05, 0.9];
+// A low-frequency wave: few, wide, open arcs (not a tight zigzag). Stations sit
+// ALONG the sweep, so the line changes direction rarely.
+const AMP = 0.12; // horizontal reach of each sweep
+const FREQ = 1.15; // arcs across the whole section — low = wide & open
+const PHASE = -0.18;
+const Y0 = 0.22;
+const Y1 = 0.84;
+const xAt = (ty: number) => 0.5 + AMP * Math.sin(ty * FREQ * 2 * Math.PI + PHASE);
 
 function buildGeom(W: number, H: number, N: number) {
   const stations: StationMeta[] = [];
   for (let i = 0; i < N; i++) {
-    const sign = i % 2 === 0 ? -1 : 1; // station 0 leans left -> its text sits on the right
-    const xPct = 0.5 + AMP * sign * VARY[i % VARY.length];
-    const yPct = 0.22 + 0.62 * (N === 1 ? 0 : i / (N - 1));
+    const ty = N === 1 ? 0.5 : i / (N - 1);
+    const xPct = xAt(ty);
+    const yPct = Y0 + (Y1 - Y0) * ty;
     stations.push({ xPct, yPct, side: xPct < 0.5 ? "right" : "left", px: xPct * W, py: yPct * H });
   }
   const pts: [number, number][] = [];
-  pts.push([stations[0].px, -0.1 * H]);
-  stations.forEach((s) => pts.push([s.px, s.py]));
-  pts.push([stations[N - 1].px, 1.1 * H]);
+  const STEPS = 28;
+  for (let s = 0; s <= STEPS; s++) {
+    const ty = -0.12 + 1.24 * (s / STEPS);
+    pts.push([xAt(ty) * W, (Y0 + (Y1 - Y0) * ty) * H]);
+  }
   return { pathD: catmullRom(pts), stations };
 }
 
