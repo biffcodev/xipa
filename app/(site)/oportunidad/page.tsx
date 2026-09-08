@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import Stats from "@/components/home/Stats";
 import SmartImage from "@/components/SmartImage";
+import OpportunityScroll, { type Beat } from "@/components/oportunidad/OpportunityScroll";
 import { getPage, getPillars, getStats } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -12,19 +12,41 @@ export const metadata: Metadata = {
 
 export default async function Oportunidad() {
   const [p, pillars, stats] = await Promise.all([getPage("oportunidad"), getPillars(), getStats()]);
+
+  const statBeats: Beat[] = stats
+    .slice(0, 4)
+    .map((s) => ({ kind: "stat" as const, value: s.value, unit: s.unit, label: s.label, desc: s.desc }));
+
+  const beats: Beat[] = [
+    { kind: "intro", eyebrow: "El problema", headline: "Más plástico del que podemos reciclar." },
+    ...statBeats,
+    {
+      kind: "pivot",
+      eyebrow: "El giro",
+      plain: p.statement.plain,
+      bold: p.statement.bold,
+      sub: "Por eso trabajamos con cuatro soluciones de ecodiseño para convertir ese residuo en valor.",
+    },
+  ];
+
   return (
     <main>
-      <PageHero image={p.hero.image} alt={p.hero.eyebrow} eyebrow={p.hero.eyebrow} line1={p.hero.line1} line2={p.hero.line2} subtitle={p.hero.subtitle} scrollHref="#pilares" />
+      <PageHero
+        image={p.hero.image}
+        alt={p.hero.eyebrow}
+        eyebrow={p.hero.eyebrow}
+        line1={p.hero.line1}
+        line2={p.hero.line2}
+        subtitle={p.hero.subtitle}
+        scrollHref="#pilares"
+      />
 
-      <section className="max-w-[1100px] mx-auto px-6 md:px-16 pt-[140px] pb-10">
-        <Reveal as="h2" className="m-0 text-fg tracking-[-0.03em] leading-[1.04] text-[clamp(32px,4.6vw,62px)]">
-          <span className="font-extralight">{p.statement.plain}</span>
-          <span className="font-extrabold">{p.statement.bold}</span>
+      <OpportunityScroll beats={beats} />
+
+      <section id="pilares" className="max-w-[1280px] mx-auto px-6 md:px-16 pt-[80px] pb-10">
+        <Reveal as="span" className="block text-xs tracking-[0.24em] uppercase text-brand font-bold">
+          Cuatro soluciones
         </Reveal>
-      </section>
-
-      <section id="pilares" className="max-w-[1280px] mx-auto px-6 md:px-16 pt-[60px] pb-10">
-        <Reveal as="span" className="block text-xs tracking-[0.24em] uppercase text-brand font-bold">Cuatro soluciones</Reveal>
         {pillars.map((pl, i) => {
           const imgLeft = i % 2 === 0;
           const Img = (
@@ -43,13 +65,21 @@ export default async function Oportunidad() {
           );
           return (
             <div key={i} className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center py-12 md:py-16">
-              {imgLeft ? (<>{Img}{Text}</>) : (<>{Text}{Img}</>)}
+              {imgLeft ? (
+                <>
+                  {Img}
+                  {Text}
+                </>
+              ) : (
+                <>
+                  {Text}
+                  {Img}
+                </>
+              )}
             </div>
           );
         })}
       </section>
-
-      <Stats stats={stats} />
     </main>
   );
 }
