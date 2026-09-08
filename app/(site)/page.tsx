@@ -1,6 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import ParallaxImage from "@/components/anim/ParallaxImage";
+import AnimatedNumber from "@/components/anim/AnimatedNumber";
 import { getProjects } from "@/lib/content";
 
 type Proj = { slug: string; title: string; subtitle?: string; tag?: string; meta?: { anio?: string; cliente?: string } };
@@ -21,7 +22,7 @@ export default async function Home() {
     <main>
       {/* ───────── Hero ───────── */}
       <section className="relative h-screen w-full overflow-hidden bg-[#0d0d0c]">
-        <Image src="/images/hero-circular.jpg" alt="" fill sizes="100vw" priority className="object-cover scale-[1.06]" />
+        <ParallaxImage src="/images/hero-circular.jpg" priority speed={0.14} />
         <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(0,0,0,0.74)_0%,rgba(0,0,0,0.34)_48%,rgba(0,0,0,0.08)_80%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0)_42%)]" />
         <div className="absolute left-6 md:left-12 lg:left-20 top-28 right-6 font-mono text-[11px] uppercase tracking-[0.34em] text-white/45 flex justify-between">
@@ -46,22 +47,10 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ───────── Ticker ───────── */}
-      <div className="w-full overflow-hidden border-y border-line2 bg-bg1 py-4">
-        <div className="flex w-max gap-12 whitespace-nowrap will-change-transform" style={{ animation: "xipaMarquee 42s linear infinite" }}>
-          {[...projects, ...projects].map((p, i) => (
-            <span key={i} className="text-sm text-muted">
-              <span className="text-brand font-bold">— </span>
-              <span className="font-semibold text-fg">{p.title}:</span> {p.subtitle}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* ───────── La oportunidad (tipografía protagonista) ───────── */}
-      <section className="w-full bg-bg1 px-6 md:px-12 lg:px-20 py-[15vh]">
+      {/* ───────── La oportunidad ───────── */}
+      <section className="w-full bg-bg0 px-6 md:px-12 lg:px-20 py-[16vh]">
         <div className="mx-auto max-w-[1600px]">
-          <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">// 01 — La oportunidad</Reveal>
+          <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">01 — La oportunidad</Reveal>
           <Reveal as="h2" className="mt-8 max-w-[16ch] text-fg font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(40px,7vw,120px)]">
             El impacto ambiental no se negocia. El punto de partida es tu negocio.
           </Reveal>
@@ -78,11 +67,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ───────── Proyectos destacados (full-bleed, imagen protagonista) ───────── */}
-      <section className="w-full bg-[#0d0d0c] px-6 md:px-12 lg:px-20 pt-[15vh] pb-16 text-white">
+      {/* ───────── Proyectos — intro ───────── */}
+      <section className="w-full bg-[#0d0d0c] px-6 md:px-12 lg:px-20 py-[14vh] text-white">
         <div className="mx-auto max-w-[1600px] flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">// 02 — Proyectos</span>
+            <span className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">02 — Proyectos</span>
             <h2 className="mt-6 max-w-[14ch] font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(38px,6vw,104px)]">
               Soluciones que ya están en el mercado.
             </h2>
@@ -90,30 +79,42 @@ export default async function Home() {
           <Link href="/proyectos" className="whitespace-nowrap text-brand text-lg font-semibold no-underline hover:opacity-80">Ver todos →</Link>
         </div>
       </section>
-      {destacados.map((p, i) => (
-        <section key={p.slug} className="grid min-h-[86vh] w-full grid-cols-1 md:grid-cols-2 bg-[#0d0d0c] text-white">
-          <div className={`relative min-h-[52vh] md:min-h-full ${i % 2 === 1 ? "md:order-2" : ""}`}>
-            <Image src={img(p.slug)} alt={p.title} fill sizes="(max-width:768px) 100vw, 50vw" className="object-cover" />
-          </div>
-          <div className="flex flex-col justify-center px-6 md:px-14 lg:px-20 py-16">
-            <span className="font-mono text-xs tracking-[0.24em] text-white/40">
-              0{i + 1} / 0{n}
-            </span>
-            <h3 className="mt-5 font-extrabold tracking-[-0.03em] leading-[0.95] text-[clamp(40px,5.4vw,86px)]">{p.title}</h3>
-            <span className="mt-4 text-sm font-bold uppercase tracking-[0.18em] text-brand">
-              {[p.tag, p.meta?.anio].filter(Boolean).join(" · ")}
-            </span>
-            <p className="mt-5 max-w-[42ch] text-white/70 text-[clamp(17px,1.5vw,21px)] font-light leading-[1.55]">{p.subtitle}</p>
-            <Link href={`/proyectos/${p.slug}`} className="mt-8 inline-block w-fit text-brand text-lg font-semibold no-underline hover:opacity-80">Ver proyecto →</Link>
-          </div>
-        </section>
-      ))}
+
+      {/* ───────── Proyectos — paneles a viewport completo ───────── */}
+      {destacados.map((p, i) => {
+        const left = i % 2 === 0;
+        return (
+          <section key={p.slug} className="relative h-screen w-full overflow-hidden bg-[#0d0d0c]">
+            <ParallaxImage src={img(p.slug)} alt={p.title} sizes="100vw" speed={0.1} />
+            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.15)_45%,rgba(0,0,0,0.25)_100%)]" />
+            <div
+              className={`absolute bottom-[12vh] max-w-[760px] px-6 md:px-12 lg:px-20 ${left ? "left-0 text-left" : "right-0 text-left md:text-right"}`}
+            >
+              <span className="font-mono text-xs tracking-[0.24em] text-white/55">
+                0{i + 1} / 0{n}
+              </span>
+              <h3 className={`mt-4 text-white font-extrabold tracking-[-0.03em] leading-[0.92] text-[clamp(46px,7vw,110px)] [text-shadow:0_4px_40px_rgba(0,0,0,0.5)] ${left ? "" : "md:ml-auto"}`}>
+                {p.title}
+              </h3>
+              <span className="mt-4 block text-sm font-bold uppercase tracking-[0.18em] text-brand">
+                {[p.tag, p.meta?.anio].filter(Boolean).join(" · ")}
+              </span>
+              <p className={`mt-4 max-w-[46ch] text-white/85 text-[clamp(17px,1.5vw,21px)] font-light leading-[1.55] ${left ? "" : "md:ml-auto"}`}>
+                {p.subtitle}
+              </p>
+              <Link href={`/proyectos/${p.slug}`} className="mt-7 inline-block text-brand text-lg font-semibold no-underline hover:opacity-80">
+                Ver proyecto →
+              </Link>
+            </div>
+          </section>
+        );
+      })}
 
       {/* ───────── Equipo ───────── */}
-      <section className="w-full bg-bg1 px-6 md:px-12 lg:px-20 py-[15vh]">
+      <section className="w-full bg-bg0 px-6 md:px-12 lg:px-20 py-[16vh]">
         <div className="mx-auto grid max-w-[1600px] items-center gap-14 md:grid-cols-[1.25fr_1fr]">
           <div>
-            <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">// 03 — Equipo</Reveal>
+            <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">03 — Equipo</Reveal>
             <Reveal as="h2" className="mt-8 max-w-[15ch] text-fg font-extrabold tracking-[-0.04em] leading-[0.96] text-[clamp(34px,5.2vw,84px)]">
               Treinta años trabajando el plástico. Más de veinte investigando cómo darle otra vuelta.
             </Reveal>
@@ -122,9 +123,9 @@ export default async function Home() {
             </Reveal>
           </div>
           <Reveal>
-            <figure className="relative">
+            <figure>
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[24px]">
-                <Image src="/images/slots/team-alejandro.webp" alt="Alejandro Romano Rusiñol" fill sizes="(max-width:768px) 100vw, 40vw" className="object-cover" />
+                <ParallaxImage src="/images/slots/team-alejandro.webp" alt="Alejandro Romano Rusiñol" sizes="(max-width:768px) 100vw, 40vw" speed={0.06} />
               </div>
               <figcaption className="mt-5 border-l-2 border-brand pl-5">
                 <p className="text-fg text-lg font-light leading-[1.4] tracking-[-0.01em]">
@@ -137,24 +138,30 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ───────── Cómo trabajamos ───────── */}
-      <section className="w-full bg-[#0d0d0c] px-6 md:px-12 lg:px-20 py-[15vh] text-white">
+      {/* ───────── Cómo trabajamos (cifras animadas) ───────── */}
+      <section className="w-full bg-[#0d0d0c] px-6 md:px-12 lg:px-20 py-[16vh] text-white">
         <div className="mx-auto max-w-[1600px]">
-          <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">// 04 — Cómo trabajamos</Reveal>
+          <Reveal as="span" className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">04 — Cómo trabajamos</Reveal>
           <Reveal as="h2" className="mt-8 max-w-[16ch] font-extrabold tracking-[-0.04em] leading-[0.95] text-[clamp(40px,6.4vw,112px)]">
             El diseño no es solo diseño. Es diseño sistémico.
           </Reveal>
           <div className="mt-16 grid grid-cols-1 gap-10 border-t border-white/15 pt-12 sm:grid-cols-3">
-            {[
-              { v: "30 años", l: "en la industria del plástico" },
-              { v: `${projects.length}`, l: "proyectos materializados" },
-              { v: "Medido", l: "impacto ambiental en cada proyecto" },
-            ].map((s, i) => (
-              <Reveal key={i} delay={i * 0.06}>
-                <div className="text-brand font-extrabold tracking-[-0.03em] leading-[0.9] text-[clamp(44px,5.5vw,84px)]">{s.v}</div>
-                <div className="mt-3 text-white/60 font-light">{s.l}</div>
-              </Reveal>
-            ))}
+            <div>
+              <div className="text-brand font-extrabold tracking-[-0.03em] leading-[0.9] text-[clamp(44px,5.5vw,84px)]">
+                <AnimatedNumber value={30} suffix=" años" />
+              </div>
+              <div className="mt-3 text-white/60 font-light">en la industria del plástico</div>
+            </div>
+            <div>
+              <div className="text-brand font-extrabold tracking-[-0.03em] leading-[0.9] text-[clamp(44px,5.5vw,84px)]">
+                <AnimatedNumber value={projects.length} />
+              </div>
+              <div className="mt-3 text-white/60 font-light">proyectos materializados</div>
+            </div>
+            <div>
+              <div className="text-brand font-extrabold tracking-[-0.03em] leading-[0.9] text-[clamp(44px,5.5vw,84px)]">Medido</div>
+              <div className="mt-3 text-white/60 font-light">impacto ambiental en cada proyecto</div>
+            </div>
           </div>
           <Reveal>
             <Link href="/como-trabajamos" className="mt-14 inline-block text-brand text-lg font-semibold no-underline hover:opacity-80">Explorar →</Link>
@@ -162,12 +169,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ───────── Perspectivas (lista editorial) ───────── */}
-      <section className="w-full bg-bg1 px-6 md:px-12 lg:px-20 py-[15vh]">
+      {/* ───────── Perspectivas ───────── */}
+      <section className="w-full bg-bg0 px-6 md:px-12 lg:px-20 py-[16vh]">
         <div className="mx-auto max-w-[1600px]">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <span className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">// 05 — Perspectivas</span>
+              <span className="block font-mono text-xs uppercase tracking-[0.3em] text-brand">05 — Perspectivas</span>
               <h2 className="mt-6 max-w-[16ch] text-fg font-extrabold tracking-[-0.04em] leading-[0.98] text-[clamp(32px,4.6vw,68px)]">
                 Lo que aprendimos investigando circularidad y diseño.
               </h2>

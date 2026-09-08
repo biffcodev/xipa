@@ -289,7 +289,7 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
     <section ref={wrapRef} className="relative bg-bg1" style={{ height: `${N * 105 + 30}vh` }}>
       <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden">
         <div className="pointer-events-none absolute left-8 top-8 font-mono text-[11px] uppercase tracking-[0.3em] text-fg/30">
-          // La oportunidad
+          La oportunidad
         </div>
 
         <svg className="absolute inset-0 h-full w-full" width={dims.w} height={dims.h} aria-hidden>

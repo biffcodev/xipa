@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import SmartImage from "@/components/SmartImage";
+import ParallaxImage from "@/components/anim/ParallaxImage";
 import { hasImg, type Img } from "@/lib/img";
 import { getProject, getProjectSlugs } from "@/lib/content";
 import { adjacent } from "@/lib/projects";
@@ -29,7 +30,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   const { prev, next } = adjacent(slug);
 
-  const heroImage = (project as { heroImage?: Img }).heroImage;
+  const heroSrc = `/images/slots/pf-${slug}.webp`;
   const featuredImage = (project as { featuredImage?: Img }).featuredImage;
   const gallery = (project as { gallery?: Img[] }).gallery ?? [];
   const processImg: Img = featuredImage ?? gallery[0];
@@ -43,11 +44,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
   return (
     <main>
-      {/* 1 — HERO */}
-      <section className="relative h-screen overflow-hidden bg-bg1">
-        <div className="absolute inset-0">
-          <SmartImage img={heroImage} alt={project.title} priority sizes="100vw" />
-        </div>
+      {/* 1 — HERO (viewport completo, imagen plena + parallax) */}
+      <section className="relative h-screen w-full overflow-hidden bg-[#0d0d0c]">
+        <ParallaxImage src={heroSrc} alt={project.title} priority sizes="100vw" speed={0.12} />
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(110deg,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.34)_46%,rgba(0,0,0,0.04)_74%)]" />
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(0deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0)_38%)]" />
         <div className="absolute left-8 md:left-16 right-8 md:right-16 bottom-[15vh] max-w-[960px] animate-[heroIn_1s_cubic-bezier(.2,.7,.2,1)_.15s_both]">

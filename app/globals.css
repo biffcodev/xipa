@@ -16,16 +16,16 @@
   --line5: rgba(0, 0, 0, 0.18);
   --line6: rgba(0, 0, 0, 0.22);
   --bg0: #ffffff;
-  --bg1: #f7f5f1;
-  --bg2: #f1eee8;
-  --bg3: #f4f1eb;
-  --bg4: #f7f3ec;
-  --bg5: #f0efeb;
-  --bg6: #e7e5df;
-  --bg7: #dedcd6;
-  --bg8: #d3d1cb;
+  --bg1: #ffffff;
+  --bg2: #f4f4f3;
+  --bg3: #ffffff;
+  --bg4: #fafafa;
+  --bg5: #f4f4f3;
+  --bg6: #eaeaea;
+  --bg7: #e2e2e1;
+  --bg8: #d6d6d5;
   --bg9: #ffffff;
-  --bgnode: #efe6d8;
+  --bgnode: #f2f2f1;
 }
 
 [data-theme="dark"] {
