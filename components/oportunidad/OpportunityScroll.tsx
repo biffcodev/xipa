@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export type Beat = {
-  kind: "intro" | "stat" | "pivot";
+  kind: "intro" | "stat" | "pivot" | "list";
   eyebrow?: string;
   headline?: string;
   value?: number;
@@ -12,7 +12,7 @@ export type Beat = {
   plain?: string;
   bold?: string;
   sub?: string;
-  image?: string;
+  items?: string[];
 };
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -42,21 +42,21 @@ function catmullRom(points: [number, number][]) {
   return d;
 }
 
-const AMP = 0.06; // gentle horizontal swing — narrow & vertical
-const VARY = [1, 0.82, 1.12, 0.88, 1.06, 0.9];
+const AMP = 0.045; // very gentle horizontal swing — open, mostly-vertical curve
+const VARY = [1, 0.8, 1.15, 0.85, 1.05, 0.9];
 
 function buildGeom(W: number, H: number, N: number) {
   const stations: StationMeta[] = [];
   for (let i = 0; i < N; i++) {
     const sign = i % 2 === 0 ? -1 : 1; // station 0 leans left -> its text sits on the right
     const xPct = 0.5 + AMP * sign * VARY[i % VARY.length];
-    const yPct = 0.2 + 0.56 * (N === 1 ? 0 : i / (N - 1));
+    const yPct = 0.22 + 0.62 * (N === 1 ? 0 : i / (N - 1));
     stations.push({ xPct, yPct, side: xPct < 0.5 ? "right" : "left", px: xPct * W, py: yPct * H });
   }
   const pts: [number, number][] = [];
-  pts.push([stations[0].px, -0.08 * H]);
+  pts.push([stations[0].px, -0.1 * H]);
   stations.forEach((s) => pts.push([s.px, s.py]));
-  pts.push([stations[N - 1].px, 1.08 * H]);
+  pts.push([stations[N - 1].px, 1.1 * H]);
   return { pathD: catmullRom(pts), stations };
 }
 
@@ -99,6 +99,20 @@ function BeatBody({ b, idx, total }: { b: Beat; idx: number; total: number }) {
           <div className="mt-4 text-sm font-bold uppercase tracking-[0.18em] text-brand">{b.label}</div>
           <p className="mt-2 max-w-[24ch] text-lg font-light leading-snug text-muted">{b.desc}</p>
         </>
+      ) : b.kind === "list" ? (
+        <>
+          {b.headline && (
+            <h2 className="mb-5 text-[clamp(26px,3vw,42px)] font-bold leading-[1.05] tracking-[-0.02em] text-fg">{b.headline}</h2>
+          )}
+          <ul className="space-y-3.5">
+            {b.items?.map((it, k) => (
+              <li key={k} className="flex items-start gap-3 text-[clamp(18px,1.5vw,24px)] font-light leading-snug text-fg">
+                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+        </>
       ) : b.kind === "pivot" ? (
         <>
           <h2 className="text-[clamp(30px,3.6vw,54px)] font-light leading-[1.06] tracking-[-0.03em] text-fg">
@@ -114,15 +128,6 @@ function BeatBody({ b, idx, total }: { b: Beat; idx: number; total: number }) {
   );
 }
 
-function Frame({ src }: { src: string }) {
-  return (
-    <div className="overflow-hidden rounded-[20px] shadow-[0_30px_70px_rgba(0,0,0,0.18)]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" className="aspect-[4/3] w-full object-cover" />
-    </div>
-  );
-}
-
 export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
   const N = beats.length;
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -131,7 +136,6 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
   const dotRef = useRef<SVGGElement>(null);
   const glowRef = useRef<SVGCircleElement>(null);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
   const metaRef = useRef<StationMeta[]>([]);
   const geomRef = useRef<{ L: number; keys: [number, number][]; timing: Timing[] } | null>(null);
 
@@ -235,17 +239,11 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
             glowRef.current.setAttribute("cy", String(pt.y));
           }
           geom.timing.forEach((t, i) => {
-            const op = beatOpacity(t, p);
             const tx = textRefs.current[i];
-            if (tx) {
-              tx.style.opacity = String(op);
-              tx.style.transform = `translateY(calc(-50% + ${(1 - op) * 22}px))`;
-            }
-            const im = imgRefs.current[i];
-            if (im) {
-              im.style.opacity = String(op);
-              im.style.transform = `translateY(calc(-50% + ${(1 - op) * 38}px))`;
-            }
+            if (!tx) return;
+            const op = beatOpacity(t, p);
+            tx.style.opacity = String(op);
+            tx.style.transform = `translateY(calc(-50% + ${(1 - op) * 22}px))`;
           });
         }
       }
@@ -264,11 +262,6 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
             {beats.map((b, i) => (
               <li key={i} className="relative">
                 <span className="absolute -left-[38px] top-1 h-3.5 w-3.5 rounded-full bg-brand ring-4 ring-brand/15" />
-                {b.image && (
-                  <div className="mb-5 max-w-[280px]">
-                    <Frame src={b.image} />
-                  </div>
-                )}
                 <BeatBody b={b} idx={i} total={N} />
               </li>
             ))}
@@ -313,47 +306,24 @@ export default function OpportunityScroll({ beats }: { beats: Beat[] }) {
           </g>
         </svg>
 
-        {/* text cards */}
         {stations.map((s, i) => (
           <div
-            key={`t${i}`}
+            key={i}
             ref={(el) => {
               textRefs.current[i] = el;
             }}
-            className="absolute w-[min(430px,31vw)]"
+            className="absolute w-[min(440px,32vw)]"
             style={{
               top: `${s.yPct * 100}%`,
               transform: "translateY(-50%)",
               opacity: 0,
               willChange: "opacity, transform",
-              ...(s.side === "right" ? { left: "60%" } : { right: "60%" }),
+              ...(s.side === "right" ? { left: "58%" } : { right: "58%" }),
             }}
           >
             <BeatBody b={beats[i]} idx={i} total={N} />
           </div>
         ))}
-
-        {/* images (opposite side of the text) */}
-        {stations.map((s, i) =>
-          beats[i].image ? (
-            <div
-              key={`i${i}`}
-              ref={(el) => {
-                imgRefs.current[i] = el;
-              }}
-              className="absolute w-[min(360px,26vw)]"
-              style={{
-                top: `${s.yPct * 100}%`,
-                transform: "translateY(-50%)",
-                opacity: 0,
-                willChange: "opacity, transform",
-                ...(s.side === "right" ? { right: "60%" } : { left: "60%" }),
-              }}
-            >
-              <Frame src={beats[i].image!} />
-            </div>
-          ) : null,
-        )}
       </div>
     </section>
   );
